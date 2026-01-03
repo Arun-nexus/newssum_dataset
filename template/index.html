@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>kalachakra newslm</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="bg"></div>
+
+    <div class="container">
+        <h1>kalachakra</h1>
+        <p class="tagline">time-aware indian news intelligence</p>
+
+        <div class="card">
+            <label>year</label>
+            <input
+                id="yr"
+                type="number"
+                placeholder="e.g. 2013"
+            >
+
+            <label>question</label>
+            <textarea
+                id="q"
+                rows="4"
+                placeholder="what happened during the allahabad stampede?"
+            ></textarea>
+
+            <button id="btn">generate answer</button>
+
+            <div class="loader hidden" id="loader">
+                thinking...
+            </div>
+        </div>
+
+        <div class="output" id="out">
+            <p class="hint">response will appear here</p>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: #0f0f14;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+/* subtle animated background */
+.bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 20%, #2a2a72, transparent 40%),
+        radial-gradient(circle at 80% 80%, #5f2c82, transparent 40%);
+    opacity: 0.4;
+    z-index: -1;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 3rem;
+    letter-spacing: 2px;
+}
+
+.tagline {
+    color: #a0a0c0;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    width: 420px;
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    color: #b0b0d0;
+    margin-top: 12px;
+}
+
+input,
+textarea {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #1c1c28;
+    color: #fff;
+    outline: none;
+    resize: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #666;
+}
+
+button {
+    margin-top: 18px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* loader */
+.loader {
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: #aaa;
+    text-align: center;
+    animation: pulse 1.2s infinite;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+.output {
+    margin-top: 25px;
+    width: 420px;
+    min-height: 90px;
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(6px);
+    font-size: 0.9rem;
+    color: #ddd;
+
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.hint {
+    color: #777;
+    font-style: italic;
+}

@@ -1,45 +1,55 @@
 import os
 import torch
+from click import prompt
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
 
-BASE_MODEL = "microsoft/phi-2"
-ADAPTER_PATH = r"C:\Users\Arun\PycharmProjects\JupyterProject\model_trained_parameter"
-OFFLOAD_DIR = "./offload"
+base_model = "microsoft/phi-2"
+adapter_path = "./model_trained_parameter"
 
-os.makedirs(OFFLOAD_DIR, exist_ok=True)
+device = "cpu"
 
-tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
+hf_token = os.getenv("HF_TOKEN")
+if not hf_token:
+    raise RuntimeError("hf_token missing")
 
-# 1️⃣ Load base model WITH offload
-base_model = AutoModelForCausalLM.from_pretrained(
-    BASE_MODEL,
-    device_map="auto",
-    dtype=torch.float16,
-    offload_folder=OFFLOAD_DIR,
-)
-
-# 2️⃣ Load LoRA adapter WITH SAME offload_dir
-model = PeftModel.from_pretrained(
+tok = AutoTokenizer.from_pretrained(
     base_model,
-    ADAPTER_PATH,
-    device_map="auto",          # 🔥 REQUIRED
-    offload_folder=OFFLOAD_DIR  # 🔥 REQUIRED
+    token=hf_token
+)
+tok.pad_token = tok.eos_token
+
+mdl = AutoModelForCausalLM.from_pretrained(
+    base_model,
+    dtype=torch.float32,
+    low_cpu_mem_usage=False,   # IMPORTANT
+    token=hf_token
 )
 
-model.eval()
+mdl = PeftModel.from_pretrained(
+    mdl,
+    adapter_path
+)
 
-prompt = "[YEAR=2013]\nWhat happened during the Allahabad stampede?"
+mdl.to(device)
+mdl.eval()
 
-inputs = tokenizer(prompt, return_tensors="pt")
+print("model loaded fully on cpu")
 
-with torch.no_grad():
-    output = model.generate(
-        **inputs,
-        max_new_tokens=150,
-        do_sample=False,
-        temperature=0.0
-    )
+def gen(prompt: str, max_tokens: int = 150) -> str:
+    inp = tok(prompt, return_tensors="pt")
 
-print(tokenizer.decode(output[0], skip_special_tokens=True))
-print("Model device:", next(model.parameters()).device)
+    with torch.no_grad():
+        out = mdl.generate(
+            **inp,
+            max_new_tokens=max_tokens,
+            do_sample=True,
+            temperature=0.7,
+            top_p = 0.9,
+            repetition_penalty = 1.2
+        )
+
+    text = tok.decode(out[0], skip_special_tokens=True)
+    if text.startswith(prompt):
+        text = text[len(prompt):].strip()
+    return text
