@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>kalachakra newslm</title>
+    <title>TIME AWARE SUMMARIZER</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -10,29 +10,19 @@
     <div class="bg"></div>
 
     <div class="container">
-        <h1>kalachakra</h1>
+        <h1>TIME AWARE SUMMARIZER</h1>
         <p class="tagline">time-aware indian news intelligence</p>
 
         <div class="card">
             <label>year</label>
-            <input
-                id="yr"
-                type="number"
-                placeholder="e.g. 2013"
-            >
+            <input id="yr" type="number" placeholder="e.g. 2013">
 
             <label>question</label>
-            <textarea
-                id="q"
-                rows="4"
-                placeholder="what happened during the allahabad stampede?"
-            ></textarea>
+            <textarea id="q" rows="4" placeholder="what happened during the allahabad stampede?"></textarea>
 
             <button id="btn">generate answer</button>
 
-            <div class="loader hidden" id="loader">
-                thinking...
-            </div>
+            <div class="loader hidden" id="loader">thinking...</div>
         </div>
 
         <div class="output" id="out">
@@ -40,6 +30,44 @@
         </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script>
+        const btn = document.getElementById('btn');
+        const out = document.getElementById('out');
+        const loader = document.getElementById('loader');
+
+        btn.onclick = async () => {
+            const year = document.getElementById('yr').value;
+            const question = document.getElementById('q').value;
+
+            if (!year || !question) {
+                alert("Please fill both year and question");
+                return;
+            }
+
+            // 1. Loader dikhao aur purana result clear karo
+            loader.classList.remove('hidden');
+            out.innerHTML = '<p class="hint">Generating answer...</p>';
+
+            try {
+                // 2. Query parameters ke saath fetch call (Kyuki app.py mein direct arguments hain)
+                const response = await fetch(`/generate?year=${year}&question=${encodeURIComponent(question)}`, {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+
+                // 3. Response ko UI mein dikhao
+                // data.answer wahi hai jo aapne app.py mein return kiya hai
+                out.innerText = data.answer;
+
+            } catch (error) {
+                out.innerText = "Error: Backend se connect nahi ho paya.";
+                console.error(error);
+            } finally {
+                // 4. Loader wapas chhupao
+                loader.classList.add('hidden');
+            }
+        };
+    </script>
 </body>
 </html>

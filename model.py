@@ -1,6 +1,5 @@
 import os
 import torch
-from click import prompt
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
 
@@ -19,10 +18,11 @@ tok = AutoTokenizer.from_pretrained(
 )
 tok.pad_token = tok.eos_token
 
+
 mdl = AutoModelForCausalLM.from_pretrained(
     base_model,
     dtype=torch.float32,
-    low_cpu_mem_usage=False,   # IMPORTANT
+    low_cpu_mem_usage=False,
     token=hf_token
 )
 
@@ -34,8 +34,6 @@ mdl = PeftModel.from_pretrained(
 mdl.to(device)
 mdl.eval()
 
-print("model loaded fully on cpu")
-
 def gen(prompt: str, max_tokens: int = 150) -> str:
     inp = tok(prompt, return_tensors="pt")
 
@@ -43,13 +41,10 @@ def gen(prompt: str, max_tokens: int = 150) -> str:
         out = mdl.generate(
             **inp,
             max_new_tokens=max_tokens,
-            do_sample=True,
-            temperature=0.7,
-            top_p = 0.9,
-            repetition_penalty = 1.2
+            do_sample=False,
+            repetition_penalty = 1.2,
+            eos_token_id =tok.eos_token_id,
         )
 
-    text = tok.decode(out[0], skip_special_tokens=True)
-    if text.startswith(prompt):
-        text = text[len(prompt):].strip()
-    return text
+    return tok.decode(out[0], skip_special_tokens=True)
+print(gen("what happened during the allahabad stampede?"))
