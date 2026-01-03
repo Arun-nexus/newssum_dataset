@@ -1,0 +1,45 @@
+# =========================
+# Python / IDE junk
+# =========================
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.idea/
+.vscode/
+
+# =========================
+# Runtime / cache
+# =========================
+.cache/
+offload/
+.env
+
+# =========================
+# Datasets (NEVER push)
+# =========================
+*.jsonl
+data/
+datasets/
+
+# =========================
+# Model weights (base models)
+# =========================
+*.bin
+*.pt
+*.ckpt
+
+# =========================
+# Tokenizer auto-generated files (ignore)
+# =========================
+tokenizer.json
+tokenizer_config.json
+special_tokens_map.json
+vocab.json
+merges.txt
+added_tokens.json
+
+# =========================
+# Allow ONLY LoRA adapter explicitly
+# =========================
+!model_trained_parameter/adapter_model.safetensors
+!model_trained_parameter/adapter_config.json
