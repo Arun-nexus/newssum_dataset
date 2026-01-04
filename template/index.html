@@ -44,27 +44,22 @@
                 return;
             }
 
-            // 1. Loader dikhao aur purana result clear karo
             loader.classList.remove('hidden');
             out.innerHTML = '<p class="hint">Generating answer...</p>';
 
             try {
-                // 2. Query parameters ke saath fetch call (Kyuki app.py mein direct arguments hain)
                 const response = await fetch(`/generate?year=${year}&question=${encodeURIComponent(question)}`, {
                     method: 'POST'
                 });
 
                 const data = await response.json();
 
-                // 3. Response ko UI mein dikhao
-                // data.answer wahi hai jo aapne app.py mein return kiya hai
                 out.innerText = data.answer;
 
             } catch (error) {
-                out.innerText = "Error: Backend se connect nahi ho paya.";
+                out.innerText = "Error: cannot connect with the server.";
                 console.error(error);
             } finally {
-                // 4. Loader wapas chhupao
                 loader.classList.add('hidden');
             }
         };

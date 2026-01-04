@@ -1,8 +1,11 @@
 import os
+
+import evaluate
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
 
+from bert_score import score as bert_score
 base_model = "microsoft/phi-2"
 adapter_path = "./model_trained_parameter"
 
@@ -48,3 +51,4 @@ def gen(prompt: str, max_tokens: int = 150) -> str:
 
     return tok.decode(out[0], skip_special_tokens=True)
 print(gen("what happened during the allahabad stampede?"))
+
